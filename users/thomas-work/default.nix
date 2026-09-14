@@ -118,8 +118,6 @@ in
         emacs-pgtk
         cudaPackages.nsight_systems
         gh
-        code-cursor
-        cursor-cli
 
         # Virtualisation
         dive
