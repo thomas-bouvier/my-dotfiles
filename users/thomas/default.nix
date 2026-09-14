@@ -17,7 +17,7 @@ in
     })
     ./konsole.nix
     (import ./opencode.nix {
-      inherit config lib;
+      inherit config lib pkgs;
       secretsPath = secretsPath;
     })
     ./librewolf.nix

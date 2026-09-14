@@ -21,6 +21,7 @@
           bierner.markdown-preview-github-styles
           pkief.material-icon-theme
           detachhead.basedpyright
+          mistralai.mistral-vibe-code
 
           # Python
           ms-python.python

@@ -1,4 +1,4 @@
-{ config, lib, secretsPath, ... }:
+{ config, lib, pkgs, secretsPath, ... }:
 
 {
   programs.opencode = {
@@ -7,7 +7,7 @@
     tui.theme = lib.mkForce "nord";
 
     settings = {
-      model = "Cursor GLM 5.2";
+      model = "Mistral GLM-5.2";
 
       provider = {
         scaleway = {
@@ -23,39 +23,49 @@
           };
         };
 
-        cursor-acp = {
-          name = "Cursor ACP";
+        mistral = {
+          name = "Mistral";
           npm = "@ai-sdk/openai-compatible";
-          options = {
-            baseURL = "http://127.0.0.1:32124/v1";
-          };
           models = {
-            "cursor-acp/auto" = {
-              name = "Auto";
+            "zai-glm-5-2" = {
+              name = "Mistral GLM-5.2";
+              attachment = true;
+              tool_call = true;
+              reasoning = true;
+              temperature = true;
+              limit = {
+                context = 1000000;
+                output = 131072;
+              };
+              modalities = {
+                input = [ "text" ];
+                output = [ "text" ];
+              };
             };
-            "cursor-acp/glm-5.2-high" = {
-              name = "Cursor GLM 5.2";
-            };
-            "cursor-acp/kimi-k3-high" = {
-              name = "Cursor Kimi K3";
-            };
-            "cursor-acp/claude-4.6-opus-high" = {
-              name = "Cursor Claude Opus 4.6";
-            };
-            "cursor-acp/cursor-grok-4.6-high" = {
-              name = "Cursor Grok 4.6";
-            };
+          };
+          options = {
+            baseURL = "https://api.mistral.ai/v1";
           };
         };
       };
-
-      plugin = [
-        "@rama_nigg/open-cursor@latest"
-      ];
     };
   };
 
   xdg.configFile = {
+    # GLM-5.2 compatibility plugin — intercepts the Mistral SSE stream to
+    # inject missing tool-call IDs and flatten structured content arrays
+    # before they hit the Zod schema validator.
+    # https://github.com/anomalyco/opencode/issues/43199
+    # https://gist.github.com/lloeki/e3c0d15ad1d0964e42efde1f7cf44e07
+    "opencode/plugins/mistral-glm-model.ts".text =
+      builtins.replaceStrings
+        [ ''id === "mistral-openai"'' ]
+        [ ''id === "mistral"'' ]
+        (builtins.readFile (pkgs.fetchurl {
+          url = "https://gist.github.com/lloeki/e3c0d15ad1d0964e42efde1f7cf44e07/raw/mistral-glm-model.ts";
+          hash = "sha256-ATeoPDk0B7SGue641QUFLVSZYBxp5xjSMbCQ32kGjMA=";
+        }));
+
     # Global instructions opencode injects into every session's system prompt.
     "opencode/AGENTS.md".text = ''
       # Global instructions
