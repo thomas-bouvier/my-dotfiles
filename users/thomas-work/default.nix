@@ -17,7 +17,7 @@ in
     })
     ../thomas/konsole.nix
     (import ../thomas/opencode.nix {
-      inherit config lib;
+      inherit config lib pkgs;
       secretsPath = secretsPath;
     })
     ../thomas/plasma.nix
