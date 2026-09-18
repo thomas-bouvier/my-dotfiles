@@ -7,7 +7,7 @@
     tui.theme = lib.mkForce "nord";
 
     settings = {
-      model = "Mistral GLM-5.2";
+      model = "mistral/zai-glm-5-3";
 
       provider = {
         scaleway = {
@@ -27,8 +27,23 @@
           name = "Mistral";
           npm = "@ai-sdk/openai-compatible";
           models = {
+            "zai-glm-5-3" = {
+              name = "GLM-5.3";
+              attachment = true;
+              tool_call = true;
+              reasoning = true;
+              temperature = true;
+              limit = {
+                context = 1000000;
+                output = 131072;
+              };
+              modalities = {
+                input = [ "text" ];
+                output = [ "text" ];
+              };
+            };
             "zai-glm-5-2" = {
-              name = "Mistral GLM-5.2";
+              name = "GLM-5.2";
               attachment = true;
               tool_call = true;
               reasoning = true;
@@ -52,15 +67,25 @@
   };
 
   xdg.configFile = {
-    # GLM-5.2 compatibility plugin — intercepts the Mistral SSE stream to
-    # inject missing tool-call IDs and flatten structured content arrays
+    # GLM-5.2 / GLM-5.3 compatibility plugin — intercepts the Mistral SSE stream
+    # to inject missing tool-call IDs and flatten structured content arrays
     # before they hit the Zod schema validator.
     # https://github.com/anomalyco/opencode/issues/43199
     # https://gist.github.com/lloeki/e3c0d15ad1d0964e42efde1f7cf44e07
     "opencode/plugins/mistral-glm-model.ts".text =
       builtins.replaceStrings
-        [ ''id === "mistral-openai"'' ]
-        [ ''id === "mistral"'' ]
+        [
+          ''id === "mistral-openai"''
+          ''const MODEL = "zai-glm-5-2"''
+          ''Object.hasOwn(provider.models ?? {}, MODEL)''
+          ''body.model === MODEL''
+        ]
+        [
+          ''id === "mistral"''
+          ''const MODELS = ["zai-glm-5-2", "zai-glm-5-3"]''
+          ''MODELS.some(m => Object.hasOwn(provider.models ?? {}, m))''
+          ''MODELS.includes(body.model)''
+        ]
         (builtins.readFile (pkgs.fetchurl {
           url = "https://gist.github.com/lloeki/e3c0d15ad1d0964e42efde1f7cf44e07/raw/mistral-glm-model.ts";
           hash = "sha256-ATeoPDk0B7SGue641QUFLVSZYBxp5xjSMbCQ32kGjMA=";
