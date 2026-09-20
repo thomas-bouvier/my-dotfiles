@@ -12,28 +12,27 @@
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
 
-      extensions =
-        with pkgs.nix-vscode-extensions.open-vsx-release; [
-          # IDE
-          vscodevim.vim
-          marlosirapuan.nord-deep
-          mk12.better-git-line-blame
-          bierner.markdown-preview-github-styles
-          pkief.material-icon-theme
-          detachhead.basedpyright
-          mistralai.mistral-vibe-code
+      extensions = with pkgs.nix-vscode-extensions.open-vsx-release; [
+        # IDE
+        vscodevim.vim
+        marlosirapuan.nord-deep
+        mk12.better-git-line-blame
+        bierner.markdown-preview-github-styles
+        pkief.material-icon-theme
+        detachhead.basedpyright
+        mistralai.mistral-vibe-code
 
-          # Python
-          ms-python.python
-          charliermarsh.ruff
-          astral-sh.ty
-          marimo-team.vscode-marimo
+        # Python
+        ms-python.python
+        charliermarsh.ruff
+        astral-sh.ty
+        marimo-team.vscode-marimo
 
-          # Languages
-          jnoortheen.nix-ide
-          vue.volar
-          opentofu.vscode-opentofu
-        ];
+        # Languages
+        jnoortheen.nix-ide
+        vue.volar
+        opentofu.vscode-opentofu
+      ];
 
       userSettings = {
         # Theming

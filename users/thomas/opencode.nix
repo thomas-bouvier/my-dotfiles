@@ -1,4 +1,10 @@
-{ config, lib, pkgs, secretsPath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  secretsPath,
+  ...
+}:
 
 {
   programs.opencode = {
@@ -77,19 +83,23 @@
         [
           ''id === "mistral-openai"''
           ''const MODEL = "zai-glm-5-2"''
-          ''Object.hasOwn(provider.models ?? {}, MODEL)''
-          ''body.model === MODEL''
+          "Object.hasOwn(provider.models ?? {}, MODEL)"
+          "body.model === MODEL"
         ]
         [
           ''id === "mistral"''
           ''const MODELS = ["zai-glm-5-2", "zai-glm-5-3"]''
-          ''MODELS.some(m => Object.hasOwn(provider.models ?? {}, m))''
-          ''MODELS.includes(body.model)''
+          "MODELS.some(m => Object.hasOwn(provider.models ?? {}, m))"
+          "MODELS.includes(body.model)"
         ]
-        (builtins.readFile (pkgs.fetchurl {
-          url = "https://gist.github.com/lloeki/e3c0d15ad1d0964e42efde1f7cf44e07/raw/mistral-glm-model.ts";
-          hash = "sha256-ATeoPDk0B7SGue641QUFLVSZYBxp5xjSMbCQ32kGjMA=";
-        }));
+        (
+          builtins.readFile (
+            pkgs.fetchurl {
+              url = "https://gist.github.com/lloeki/e3c0d15ad1d0964e42efde1f7cf44e07/raw/mistral-glm-model.ts";
+              hash = "sha256-ATeoPDk0B7SGue641QUFLVSZYBxp5xjSMbCQ32kGjMA=";
+            }
+          )
+        );
 
     # Global instructions opencode injects into every session's system prompt.
     "opencode/AGENTS.md".text = ''

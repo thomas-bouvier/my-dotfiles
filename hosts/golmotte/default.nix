@@ -57,9 +57,9 @@
   };
 
   #hardware.graphics.package =
-    # Workaround for Mesa 26.0.5 regression
-    # https://github.com/nix-community/nixos-apple-silicon/issues/447
-    # https://gitlab.freedesktop.org/mesa/mesa/-/work_items/15288
+  # Workaround for Mesa 26.0.5 regression
+  # https://github.com/nix-community/nixos-apple-silicon/issues/447
+  # https://gitlab.freedesktop.org/mesa/mesa/-/work_items/15288
   #  (import (fetchTarball {
   #    url = "https://github.com/NixOS/nixpkgs/archive/df26bc59d3c7cd52e4005dfe9843b1e7b0554de1.tar.gz";
   #    sha256 = "sha256-Tmp0nu2JTMHHOuV20ElkPduB0IuZaG3pBjrYPDx79u8=";
