@@ -88,23 +88,21 @@ in
         kdePackages.partitionmanager
         kdePackages.kamoso
         kdePackages.krecorder
-        libreoffice-qt6-fresh
+        libreoffice-qt
         chromium
 
         # Command line
-        curl
         neovim
         eza
         age
-        htop
         sops
         jq
         unrar
         nh
-        wl-clipboard
         git-filter-repo
         ripgrep
-        binutils
+
+        # Cloud
         oras
 
         # Development

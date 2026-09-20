@@ -70,12 +70,8 @@ in
       neovim
       eza
       age
-      htop
       sops
-      docker
-      docker-compose
       jq
-      nix-output-monitor
       unrar
       nh
 

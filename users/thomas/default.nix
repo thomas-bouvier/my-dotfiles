@@ -103,26 +103,24 @@ in
         kdePackages.kompare
         kdePackages.kamoso
         kdePackages.krecorder
-        libreoffice-qt6-fresh
+        libreoffice-qt
         chromium
 
         # Command line
-        curl
         neovim
         eza
         age
-        htop
         sops
         jq
         unrar
         nh
-        wl-clipboard
         git-filter-repo
         ripgrep
+
+        # Cloud
         rclone
         scaleway-cli
         step-cli
-        binutils
         oras
 
         # Development

@@ -39,7 +39,7 @@
     kdePackages.kfind
     kdePackages.filelight
     kdePackages.kompare
-    libreoffice-qt6-fresh
+    libreoffice-qt
 
     # Theme
     nordic

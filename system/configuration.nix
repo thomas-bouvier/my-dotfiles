@@ -114,7 +114,10 @@
   # $ nix search wget
   environment = {
     systemPackages = with pkgs; [
+      curl
+      htop
       vim
+      tmux
       zsh
       git
       tailscale
@@ -128,6 +131,8 @@
       pciutils
       efibootmgr
       openssl
+      binutils
+      wl-clipboard
     ];
 
     sessionVariables = {
