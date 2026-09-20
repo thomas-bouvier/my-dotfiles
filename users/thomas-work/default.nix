@@ -20,6 +20,7 @@ in
       inherit config lib pkgs;
       secretsPath = secretsPath;
     })
+    ../thomas/coi.nix
     ../thomas/plasma.nix
     (import ../thomas/ssh.nix {
       inherit config;
@@ -124,6 +125,7 @@ in
         podman
         podman-compose
         apptainer
+        incus
 
         # Research
         zotero

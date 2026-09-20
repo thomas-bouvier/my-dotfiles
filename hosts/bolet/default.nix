@@ -17,6 +17,8 @@
     ../../system/printing.nix
     # We need virtualisation capabilities
     ../../system/virtualisation.nix
+    # We need code-on-incus (coi)
+    ../../system/coi.nix
 
     # Users
     ../../users/thomas.nix

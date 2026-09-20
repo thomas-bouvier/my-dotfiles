@@ -109,6 +109,7 @@
       commonOverlays = [
         nur.overlays.default
         nix-vscode-extensions.overlays.default
+        (import ./overlays/coi.nix)
       ];
 
       mkUnstableOverlay = final: prev: {

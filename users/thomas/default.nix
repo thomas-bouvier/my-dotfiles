@@ -20,6 +20,7 @@ in
       inherit config lib pkgs;
       secretsPath = secretsPath;
     })
+    ./coi.nix
     ./librewolf.nix
     ./plasma.nix
     (import ./ssh.nix {
@@ -142,6 +143,7 @@ in
         podman
         podman-compose
         apptainer
+        incus
         opentofu
 
         # Android

@@ -17,6 +17,8 @@ in
       "wheel"
       "networkmanager"
       "podman"
+      "incus-admin" # code-on-incus (coi)
+      "systemd-journal" # code-on-incus (coi): kernel-journal access for nft monitoring
     ]; # Enable ‘sudo’ for the user.
 
     icon = ./thomas/assets/avatar.png;

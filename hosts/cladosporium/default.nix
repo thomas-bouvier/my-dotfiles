@@ -15,6 +15,8 @@
     ../../system/nvidia.nix
     # We need virtualisation capabilities
     ../../system/virtualisation.nix
+    # We need code-on-incus (coi)
+    ../../system/coi.nix
     # Enable Guix on this machine :)
     ../../system/guix.nix
 
