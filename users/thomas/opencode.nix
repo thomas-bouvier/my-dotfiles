@@ -68,6 +68,19 @@
             baseURL = "https://api.mistral.ai/v1";
           };
         };
+
+        vllm = {
+          name = "vLLM";
+          npm = "@ai-sdk/openai-compatible";
+          options = {
+            baseURL = "http://localhost:8000/v1";  # SSH tunnel port
+          };
+          models = {
+            "Qwen/Qwen3.8-27B" = {
+              name = "Qwen3.8-27B";
+            };
+          };
+        };
       };
     };
   };
