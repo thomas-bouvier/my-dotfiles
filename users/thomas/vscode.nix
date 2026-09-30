@@ -21,6 +21,7 @@
         pkief.material-icon-theme
         detachhead.basedpyright
         mistralai.mistral-vibe-code
+        flox.flox
 
         # Python
         ms-python.python
