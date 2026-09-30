@@ -33,6 +33,15 @@ in
     # does not forward. Force the RGB feature for xterm-256color clients so
     # the nord theme renders truecolor on the attached terminal (konsole).
     set -as terminal-features ",xterm-256color:RGB"
+    # opencode copies to the host clipboard via the OSC 52 escape sequence
+    # (the container has no wl-copy/xclip, so it is the only path). tmux's
+    # default set-clipboard "external" silently discards OSC 52 emitted by
+    # applications in panes — 3.4 only honors it with "on", which both stores
+    # the text in tmux's paste buffers and forwards the sequence to the
+    # attached client (konsole ≥ 24.12 implements OSC 52, setting the
+    # Wayland clipboard). Without this, <leader>y (messages_copy) reports
+    # success but the desktop clipboard never changes.
+    set -g set-clipboard on
   '';
 
   # Tool selection is config-only in coi (there is no --tool flag). coi seeds
@@ -76,6 +85,9 @@ in
     # bursts tripped the monitoring auto-pause). Point mise at its image-level
     # data dir explicitly; MISE_DATA_DIR takes precedence over XDG_DATA_HOME.
     MISE_DATA_DIR = "echo /home/code/.local/share/mise"
+    # mise's tracked-configs state also follows the redirected
+    # XDG_STATE_HOME into the workspace; pin it to the image-level path.
+    MISE_STATE_DIR = "echo /home/code/.local/state/mise"
     # coi starts the tool inside a DETACHED tmux session and attaches only
     # afterwards. The TUI probes the terminal's color capabilities at
     # startup, tmux reports none (no attached client), and it renders
