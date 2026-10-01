@@ -1,5 +1,6 @@
 # code-on-incus (coi): run AI coding agents inside isolated Incus system
-# containers. https://github.com/mensfeld/code-on-incus
+# containers. https://github.com/coipond/coi (repo moved from
+# mensfeld/code-on-incus; the old URL still redirects)
 #
 # Upstream has no Nix packaging and ships cgo binaries linked against
 # libsystemd, so we build from source. Version bumps happen here — never
@@ -7,7 +8,7 @@
 # the Nix store / the cap wrapper).
 final: prev:
 let
-  version = "0.12.0";
+  version = "0.13.0";
 in
 {
   coi = final.buildGoModule {
@@ -15,19 +16,20 @@ in
     inherit version;
 
     src = final.fetchFromGitHub {
-      owner = "mensfeld";
-      repo = "code-on-incus";
+      owner = "coipond";
+      repo = "coi";
       rev = "v${version}";
-      hash = "sha256-6pyfWhSEfJ2l6dxuf3m6CZuZ5/rohgE5z0QXfOOCIFc=";
+      hash = "sha256-hqzHu9oPk4uE0duISS5KeOIBc6SlJaBkbCSLiu2GHC0=";
     };
 
-    vendorHash = "sha256-C5wY73sM6U5iUYuOxdynsJYbRT+k7KRE7I9aRhwvjT4=";
+    vendorHash = "sha256-XSTbxBrLzHBNLhzCz7aDqZ5ioaQlZgIWexjtpbX9xk0=";
 
     # Replicates the embedded-asset step of `make build` (upstream Makefile):
-    # go:embed cannot use "..", so these files are copied into their packages.
+    # go:embed cannot use "..", so testdata/dummy/dummy is copied into its
+    # package. Since v0.13.0 upstream tracks build.sh and the default config
+    # in their embed packages directly, so only the dummy file is generated.
     postPatch = ''
-      mkdir -p internal/image/embedded internal/config/embedded
-      cp profiles/default/config.toml internal/config/embedded/default_config.toml
+      mkdir -p internal/image/embedded
       cp testdata/dummy/dummy internal/image/embedded/dummy
     '';
 
