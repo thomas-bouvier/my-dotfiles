@@ -181,6 +181,13 @@ in
     enable = true;
     signing.format = "openpgp";
 
+    # Globally ignored in every repository (via core.excludesFile).
+    ignores = [
+      ".local/"
+      ".claude/"
+      ".codex/"
+    ];
+
     settings = {
       user.name = "Thomas Bouvier";
       user.email = "contact@thomas-bouvier.io";
