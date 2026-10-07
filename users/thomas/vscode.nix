@@ -20,7 +20,6 @@
         bierner.markdown-preview-github-styles
         pkief.material-icon-theme
         detachhead.basedpyright
-        mistralai.mistral-vibe-code
         flox.flox
 
         # Python
