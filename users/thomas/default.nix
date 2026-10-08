@@ -118,6 +118,7 @@ in
         ripgrep
 
         # Cloud
+        datalad
         rclone
         scaleway-cli
         step-cli
