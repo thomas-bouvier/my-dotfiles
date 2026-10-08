@@ -20,7 +20,9 @@
         bierner.markdown-preview-github-styles
         pkief.material-icon-theme
         detachhead.basedpyright
+        ms-toolsai.jupyter 
         flox.flox
+        tomoki1207.pdf
 
         # Python
         ms-python.python
