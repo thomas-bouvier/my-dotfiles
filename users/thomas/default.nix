@@ -114,6 +114,7 @@ in
         jq
         unrar
         nh
+        git-annex
         git-filter-repo
         ripgrep
 
