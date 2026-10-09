@@ -122,6 +122,7 @@ Limitations:
 - (localsend) Fonts are not rendering under Asahi Linux https://github.com/localsend/localsend/issues/2873. A temporary overlay fixes this issue.
 - (dns4eu) I should find a way to enable DNSOverTLS with DNS4EU.
 - (librewolf) `privacy.resistFingerprinting = true` prevents media upload and Leboncoin login from working.
+- (vscodium) VSCodium 1.126 ignores `ELECTRON_RUN_AS_NODE`, so the marimo extension's bundled WASM language server (spawned via Electron-as-Node) never starts and crashes in a `-32097` loop. Workaround in `users/thomas/vscode.nix`: run the extension's `wasmServer.js` with Nixpkgs' Node (`marimo.lsp.server = "custom"`). Once VSCodium honors the variable again — check with `ELECTRON_RUN_AS_NODE=1 codium --version`, which should print a Node version — remove the workaround.
 
 These are not fully integrated yet:
 

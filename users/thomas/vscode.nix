@@ -46,6 +46,18 @@
         "files.insertFinalNewline" = true;
         "files.trimFinalNewlines" = true;
         "chat.disableAIFeatures" = true;
+
+        # marimo: the bundled WASM language server is spawned via
+        # ELECTRON_RUN_AS_NODE on the VSCodium binary, but our VSCodium
+        # (1.126) ignores that variable, so the server never starts
+        # (-32097 loop). Run it with a real Node instead. The path is
+        # taken from the extension derivation so it tracks the installed
+        # version.
+        "marimo.lsp.server" = "custom";
+        "marimo.lsp.path" = [
+          "${pkgs.nodejs}/bin/node"
+          "${pkgs.nix-vscode-extensions.open-vsx-release.marimo-team.vscode-marimo}/share/vscode/extensions/marimo-team.vscode-marimo/dist/wasmServer.js"
+        ];
       };
     };
   };
