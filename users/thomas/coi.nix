@@ -5,19 +5,6 @@
 # ~/.coi/config.toml.
 { config, ... }:
 
-let
-  # home-manager manages these files as symlinks into the Nix store, and
-  # bind-mounting a symlink would leave it dangling inside the container
-  # (the store path does not exist there) — opencode would silently skip the
-  # file. Mount the resolved store targets instead; the option re-resolves
-  # on every rebuild, so the mounts track changes automatically.
-  agentsMd = config.xdg.configFile."opencode/AGENTS.md".source;
-  glmPlugin = config.xdg.configFile."opencode/plugins/mistral-glm-model.ts".source;
-  # tui.json carries the theme ("nord"); coi's seeding pushes host symlinks
-  # as-is (incus file push does not follow them), which left a dangling link
-  # and the default theme inside the sandbox.
-  tuiJson = config.xdg.configFile."opencode/tui.json".source;
-in
 {
   # coi runs the AI tool inside tmux, and tmux unconditionally sets each
   # pane's TERM to its default-terminal ("tmux-256color"), overriding the
@@ -97,23 +84,30 @@ in
     FORCE_COLOR = "echo 3"
 
     # Read-only mounts of the home-manager-managed opencode config that coi
-    # does not seed itself. Skills are real files (opencode-managed) so the
-    # directory mounts as-is; AGENTS.md and the GLM plugin are Nix store
-    # symlinks, so their resolved targets are mounted (see the let bindings).
-    # Readonly mounts whose source is missing are skipped with a warning.
+    # does not seed itself — coi's seeding pushes host symlinks as-is (incus
+    # file push does not follow them), which left dangling links and the
+    # default theme inside the sandbox. These hosts are HM symlinks into the
+    # Nix store, mounted via their stable host paths: incus resolves symlink
+    # disk-device sources at every container start, so the mounts track
+    # rebuilds and survive store GC. (Mounting the resolved store targets —
+    # the previous scheme — rotted: every rebuild changed them, and GC retired
+    # the old paths while persistent containers still referenced them,
+    # failing start validation.) Skills are real files (opencode-managed) so
+    # the directory mounts as-is; coi skips readonly mounts whose source is
+    # missing with a warning.
 
     [[mounts]]
-    host = "${agentsMd}"
+    host = "~/.config/opencode/AGENTS.md"
     container = "/home/code/.config/opencode/AGENTS.md"
     readonly = true
 
     [[mounts]]
-    host = "${tuiJson}"
+    host = "~/.config/opencode/tui.json"
     container = "/home/code/.config/opencode/tui.json"
     readonly = true
 
     [[mounts]]
-    host = "${glmPlugin}"
+    host = "~/.config/opencode/plugins/mistral-glm-model.ts"
     container = "/home/code/.config/opencode/plugins/mistral-glm-model.ts"
     readonly = true
 
@@ -125,7 +119,7 @@ in
     # tmux configuration read by the tmux server coi starts inside the
     # container (see the .coi/tmux.conf comment above).
     [[mounts]]
-    host = "${config.home.file.".coi/tmux.conf".source}"
+    host = "~/.coi/tmux.conf"
     container = "/home/code/.tmux.conf"
     readonly = true
 
