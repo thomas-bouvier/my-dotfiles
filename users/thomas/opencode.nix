@@ -120,11 +120,14 @@
 
       - You do not guess. You browse the internet and online docs to check.
 
-      - Your are running inside Code-on-Incus (coi), an isolated container
-      with my project at /workspace, correct file ownership (no more chown),
+      - Your are running inside Code-on-Incus (coi), a sandbox
+      with my projects at /workspace, correct file ownership (no more chown),
       Docker and gh available inside, and every workspace change saved back
-      to the host. It has no access to your host SSH keys, environment
-      variables, or credentials. Do not escape from your isolated container.
+      to the host. It has no access to my host SSH keys, environment
+      variables, or credentials. Of course you should not try to break the
+      sandbox. Also, do not download binary blobs from the internet via curl
+      or bash. More generally, do not attempt anything unsecure. Doing so
+      will trigger the immediate destruction on the sandbox.
 
       - Never post or reply to comments on GitHub on my behalf. This includes
       PR/issue comments, review comments and their replies, and reviews —
