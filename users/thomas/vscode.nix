@@ -58,6 +58,11 @@
           "${pkgs.nodejs}/bin/node"
           "${pkgs.nix-vscode-extensions.open-vsx-release.marimo-team.vscode-marimo}/share/vscode/extensions/marimo-team.vscode-marimo/dist/wasmServer.js"
         ];
+
+        # marimo runs `uv --version` at startup and shows a popup when
+        # no uv can be executed (its bundled binary is not ELF-patched
+        # on NixOS). Point it at Nixpkgs' uv.
+        "marimo.uv.path" = "${pkgs.uv}/bin/uv";
       };
     };
   };
