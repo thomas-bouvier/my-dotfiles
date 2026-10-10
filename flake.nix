@@ -4,6 +4,14 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # TEMPORARY (2026-10-10): the nixpkgs rev we were on before the last
+    # flake.lock update — the last one where zotero 10.0.2 built (against
+    # firefox-esr-140) and is on cache.nixos.org. On newer nixos-unstable,
+    # zotero builds against firefox-esr-153 and fails ("AboutTranslations:
+    # \{ and ^ }, not found in modules/ActorManagerParent.sys.mjs --
+    # aborting"; NixOS/nixpkgs#568692, fix PR #569006 still open). Used only
+    # by mkZoteroOverlay below — delete both once #569006 hits nixos-unstable.
+    nixpkgs-zotero.url = "github:nixos/nixpkgs/6774f7bc253789b113a4f39285dc0fa100abeacc";
     flox.url = "github:flox/flox";
 
     apple-silicon = {
@@ -110,10 +118,19 @@
         nur.overlays.default
         nix-vscode-extensions.overlays.default
         (import ./overlays/coi.nix)
+        mkZoteroOverlay
       ];
 
       mkUnstableOverlay = final: prev: {
         unstable = nixpkgs-unstable.legacyPackages.${prev.system};
+      };
+
+      # zotero fails to build on current nixos-unstable (NixOS/nixpkgs#568692),
+      # so take only zotero from the pinned last-good rev — everything else
+      # stays on current nixpkgs. See the nixpkgs-zotero input above for the
+      # details and when to delete this.
+      mkZoteroOverlay = final: prev: {
+        zotero = inputs.nixpkgs-zotero.legacyPackages.${prev.system}.zotero;
       };
 
       aarch64Overlays = commonOverlays ++ [
