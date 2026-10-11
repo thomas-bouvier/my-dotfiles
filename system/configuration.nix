@@ -24,7 +24,6 @@
 
   stylix = {
     enable = true;
-    #targets.qt.platform = "kde6";
   };
 
   # Set your time zone.
@@ -125,12 +124,12 @@
       util-linux
       dosfstools
       exfatprogs
-      dracut
       file
       usbutils
-      pciutils
-      efibootmgr
       openssl
+      pciutils
+      dracut
+      efibootmgr
       binutils
       wl-clipboard
     ];
@@ -181,11 +180,6 @@
   };
 
   programs.ssh.startAgent = true;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

@@ -19,6 +19,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -92,6 +96,7 @@
       nixpkgs-unstable,
       flox,
       apple-silicon,
+      nixos-hardware,
       home-manager,
       plasma-manager,
       stylix,
@@ -309,6 +314,39 @@
 
               sharedModules = [
                 plasma-manager.homeModules.plasma-manager
+                inputs.sops-nix.homeManagerModules.sops
+              ];
+            };
+          }
+        ];
+      };
+
+      nixosConfigurations.morille = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs;
+        };
+
+        modules = [
+          {
+            nixpkgs.hostPlatform = "aarch64-linux";
+            nixpkgs.overlays = aarch64Overlays ++ [ mkUnstableOverlay ];
+          }
+
+          flox.nixosModules.flox
+          lix-module.nixosModules.default
+          # Raspberry Pi kernel, firmware and boot configuration
+          nixos-hardware.nixosModules.raspberry-pi-4
+          ./hosts/morille/default.nix
+
+          # https://nix-community.github.io/home-manager/index.xhtml#sec-flakes-nixos-module
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              extraSpecialArgs = {
+                inherit my-secrets;
+              };
+
+              sharedModules = [
                 inputs.sops-nix.homeManagerModules.sops
               ];
             };

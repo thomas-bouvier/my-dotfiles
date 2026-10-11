@@ -7,6 +7,31 @@ Download the [minimal ISO NixOS image](https://nixos.org/download/), and create 
 > [!TIP]
 > If installing for an Apple Silicon machine, you should download an ISO from [here](https://github.com/nix-community/nixos-apple-silicon/releases) instead.
 
+> [!NOTE]
+> **Raspberry Pi 4 (`morille`)**: the Pi cannot boot the minimal ISO. Instead, build the pre-installed SD card image from an `aarch64` machine (e.g. `amanite`), then flash it to the SD card (**this erases the card**). No installer, no partitioning: the image boots directly into the system and grows the root partition on first boot.
+>
+> The build snapshots the **git tree**: new files must be tracked (`git add`) before building, or they are invisible to it. Don't keep build inputs as untracked or restrictive-permission files in the repo.
+>
+> ```console
+> nix build .#nixosConfigurations.morille.config.system.build.sdImage
+> ```
+>
+> Identify your SD card with `lsblk` (it should be a `disk`, not a `part`), then flash it — **beware: `of=` must be the full block device path under `/dev/`; without the `/dev/` prefix, `dd` silently writes a regular file into the current directory instead**:
+>
+> ```console
+> zstd -d result/sd-image/*.img.zst --stdout | sudo dd of=/dev/<DISK> bs=4M status=progress conv=fsync
+> ```
+>
+> First boot takes a few minutes (partition resize + Nix store registration) before the machine appears on the network as `morille`. Subsequent boots take well under a minute.
+>
+> To update the running system, deploy from an `aarch64` machine — with the `ssh-ng://` store type, as the default copy transport hangs against the target:
+>
+> ```console
+> nh os switch . -H morille --target-host ssh-ng://thomas@morille
+> ```
+>
+> Note that the kernel, the initrd and the kernel command line live on the boot partition, which is only written when the image is built: after a lock update that bumps the kernel, rebuild and reflash the SD card image.
+
 Identify your USB stick (the USB stick should not have been mounted):
 
 ```console
@@ -16,7 +41,7 @@ lsblk
 Copy the ISO to the USB stick (replace <DISK> with your USB stick, it should be a `disk` not a `part`):
 
 ```console
-sudo dd if=<ISO_FILE> of=<DISK> bs=4M status=progress
+sudo dd if=<ISO_FILE> of=/dev/<DISK> bs=4M status=progress
 ```
 
 Once in the UEFI menu, make sure that:
