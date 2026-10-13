@@ -28,6 +28,7 @@ in
       secretsPath = secretsPath;
     })
     ./vscode.nix
+    ./yubikey.nix
     ./zsh.nix
   ];
 

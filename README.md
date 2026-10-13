@@ -2,7 +2,7 @@
 
 My declarative, reproducible [NixOS](https://nixos.org/) system built using [Lix](https://lix.systems/). My configuration is designed to support the following:
 
-- Multiple hosts, including an Apple Silicon MacBook (mine has a M2 Max chip) and an Apple Silicon Mac Mini ;
+- Multiple hosts, including a MacBook (mine has a M2 Max chip) and a Mac Mini ;
 - Multiple users, some of whom are reused across different hosts ;
 - Variants of users ;
 - A beautiful KDE Plasma desktop with [theme Nord](https://www.nordtheme.com/) applied everywhere ;
@@ -10,7 +10,8 @@ My declarative, reproducible [NixOS](https://nixos.org/) system built using [Lix
 - My Emacs config including OpenCode.el ;
 - Shell synchronisation via `atuin` ;
 - LUKS encryption via `disko` ;
-- Secrets management with `sops`.
+- Secrets management with `sops` ;
+- YubiKey support.
 
 I've aimed for a balance between readability and completeness.
 

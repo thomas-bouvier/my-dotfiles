@@ -27,6 +27,7 @@ in
       secretsPath = secretsPath;
     })
     ../thomas/vscode.nix
+    ../thomas/yubikey.nix
     ../thomas/zsh.nix
 
     # Specific Librewolf config

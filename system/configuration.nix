@@ -180,7 +180,7 @@
       ) (ensureList package.meta.license);
   };
 
-  programs.ssh.startAgent = true;
+  # The SSH agent is provided by gpg-agent, see system/yubikey.nix.
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
