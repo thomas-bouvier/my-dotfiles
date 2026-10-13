@@ -103,6 +103,7 @@ in
         kdePackages.kompare
         kdePackages.kamoso
         kdePackages.krecorder
+        kdePackages.kdeconnect-kde
         libreoffice-qt
         chromium
 
