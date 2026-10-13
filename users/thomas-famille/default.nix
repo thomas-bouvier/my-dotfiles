@@ -21,6 +21,7 @@ in
       inherit config;
       secretsPath = secretsPath;
     })
+    ../thomas/yubikey.nix
     ../thomas/zsh.nix
   ];
 
