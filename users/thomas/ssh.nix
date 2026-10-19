@@ -29,12 +29,12 @@ in
         controlMaster = "no";
         controlPath = "~/.ssh/master-%r@%n:%p";
         controlPersist = "no";
-      };
-
-      "github" = {
-        host = "github.com";
+        # Only offer the keys below, never what happens to sit in the agent
         identitiesOnly = true;
+        # Tried in order: YubiKey first, software key as fallback for
+        # hosts that don't have the hardware key in authorized_keys yet
         identityFile = [
+          "~/.ssh/id_ed25519_sk"
           "~/.ssh/id_ed25519"
         ];
       };

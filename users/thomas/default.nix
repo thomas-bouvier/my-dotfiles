@@ -225,7 +225,16 @@ in
 
   programs.git = {
     enable = true;
-    signing.format = "openpgp";
+
+    # SSH signatures via the YubiKey FIDO2 key, opt-in per commit/tag
+    # (`git commit -S`, `git tag -s`); each signature asks for touch + PIN.
+    # Without an allowedSigners file, `git verify-commit` cannot check
+    # signatures locally (GitHub can, via the uploaded signing key).
+    signing = {
+      key = "~/.ssh/id_ed25519_sk.pub";
+      signByDefault = false;
+      format = "ssh";
+    };
 
     # Globally ignored in every repository (via core.excludesFile).
     ignores = [
