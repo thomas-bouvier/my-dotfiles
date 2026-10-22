@@ -94,7 +94,11 @@
     # the old paths while persistent containers still referenced them,
     # failing start validation.) Skills are real files (opencode-managed) so
     # the directory mounts as-is; coi skips readonly mounts whose source is
-    # missing with a warning.
+    # missing with a warning — but only at container creation. Mount devices
+    # created while the source still exists persist on the container (they are
+    # never re-added or reconciled on reuse), so once a source disappears the
+    # persistent container fails incus start validation until the device is
+    # detached (`incus config device remove <ct> mount-N`).
 
     [[mounts]]
     host = "~/.config/opencode/AGENTS.md"
@@ -104,11 +108,6 @@
     [[mounts]]
     host = "~/.config/opencode/tui.json"
     container = "/home/code/.config/opencode/tui.json"
-    readonly = true
-
-    [[mounts]]
-    host = "~/.config/opencode/plugins/mistral-glm-model.ts"
-    container = "/home/code/.config/opencode/plugins/mistral-glm-model.ts"
     readonly = true
 
     [[mounts]]
