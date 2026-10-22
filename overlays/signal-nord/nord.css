@@ -1,0 +1,381 @@
+/*
+ * Nord theme for Signal Desktop (https://www.nordtheme.com)
+ *
+ * Two mechanisms, in order of preference:
+ *   1. Design-token overrides: recent Signal versions (>= ~8.x "Axo" system)
+ *      style new components with `--axo-color-*` CSS variables. We re-define
+ *      them on :root via light-dark() (Snow Storm on light, Polar Night on
+ *      dark), and pin literal Polar Night values to `.dark-theme` — the class
+ *      Signal sets on <body> in dark mode — because light-dark() does not
+ *      always re-resolve when the theme changes dynamically.
+ *   2. Legacy selector overrides: older components still use colors compiled
+ *      from SCSS literals. We override those selectors, scoped to
+ *      `.dark-theme` so light mode is untouched.
+ *
+ * Per-conversation chat colors (outgoing bubbles) are preserved by default;
+ * see the opt-in block at the bottom.
+ *
+ * Nord palette:
+ *   nord0 #2E3440  nord1 #3B4252  nord2 #434C5E  nord3 #4C566A   (Polar Night)
+ *   nord4 #D8DEE9  nord5 #E5E9F0  nord6 #ECEFF4                  (Snow Storm)
+ *   nord7 #8FBCBB  nord8 #88C0D0  nord9 #81A1C1  nord10 #5E81AC (Frost)
+ *   nord11 #BF616A nord12 #D08770 nord13 #EBCB8B nord14 #A3BE8C
+ *   nord15 #B48EAD                                                   (Aurora)
+ */
+
+/* ==========================================================================
+ * 1. Axo design tokens
+ * ========================================================================== */
+
+:root {
+  /* Brand */
+  --axo-color-brand-primary: light-dark(#5e81ac, #81a1c1);
+
+  /* Labels (text & icons): near-nord3 on light, near-nord6 on dark */
+  --axo-color-label-primary: light-dark(rgba(76, 86, 106, 0.9), rgba(236, 239, 244, 0.9));
+  --axo-color-label-secondary: light-dark(rgba(76, 86, 106, 0.6), rgba(236, 239, 244, 0.6));
+  --axo-color-label-placeholder: light-dark(rgba(76, 86, 106, 0.35), rgba(236, 239, 244, 0.35));
+  --axo-color-label-disabled: light-dark(rgba(76, 86, 106, 0.25), rgba(236, 239, 244, 0.25));
+
+  /* Colored labels: Frost for accents, Aurora for semantic colors */
+  --axo-color-label-accent: light-dark(#5e81ac, #88c0d0);
+  --axo-color-label-accent-disabled: light-dark(rgba(94, 129, 172, 0.35), rgba(136, 192, 208, 0.3));
+  --axo-color-label-affirmative: light-dark(#5e81ac, #a3be8c);
+  --axo-color-label-affirmative-disabled: light-dark(rgba(94, 129, 172, 0.35), rgba(163, 190, 140, 0.3));
+  --axo-color-label-warning: light-dark(#4c566a, #ebcb8b);
+  --axo-color-label-warning-disabled: light-dark(rgba(76, 86, 106, 0.35), rgba(235, 203, 139, 0.3));
+  --axo-color-label-safety: light-dark(#bf616a, #d08770);
+  --axo-color-label-safety-disabled: light-dark(rgba(191, 97, 106, 0.35), rgba(208, 135, 112, 0.3));
+  --axo-color-label-destructive: light-dark(#bf616a, #bf616a);
+  --axo-color-label-destructive-disabled: light-dark(rgba(191, 97, 106, 0.35), rgba(191, 97, 106, 0.3));
+
+  /* Surfaces: Snow Storm on light, Polar Night on dark */
+  --axo-color-surface-primary: light-dark(#eceff4, #2e3440);
+  --axo-color-surface-secondary: light-dark(#e5e9f0, #3b4252);
+  --axo-color-surface-tertiary: light-dark(#d8dee9, #434c5e);
+  --axo-color-surface-quaternary: light-dark(rgba(76, 86, 106, 0.24), #4c566a);
+  --axo-color-surface-card: light-dark(#e5e9f0, rgba(216, 222, 233, 0.08));
+  --axo-color-surface-message-incoming: light-dark(#d8dee9, #3b4252);
+  /* Default for new components; the legacy renderer still uses per-chat colors */
+  --axo-color-surface-message-outgoing: light-dark(#5e81ac, #5e81ac);
+
+  /* Materials: translucent surfaces (dialogs, floating panels) */
+  --axo-color-material-primary: light-dark(rgba(236, 239, 244, 0.9), rgba(46, 52, 64, 0.9));
+  --axo-color-material-secondary: light-dark(rgba(229, 233, 240, 0.9), rgba(59, 66, 82, 0.9));
+  --axo-color-material-tertiary: light-dark(rgba(216, 222, 233, 0.9), rgba(67, 76, 94, 0.9));
+  --axo-color-material-tertiary-pressed: light-dark(rgba(76, 86, 106, 0.3), rgba(76, 86, 106, 0.9));
+  --axo-color-material-quaternary: light-dark(rgba(76, 86, 106, 0.38), rgba(76, 86, 106, 0.9));
+  --axo-color-material-quaternary-pressed: light-dark(rgba(76, 86, 106, 0.46), rgba(216, 222, 233, 0.14));
+  --axo-color-material-dim-primary: light-dark(#4c566a, #4c566a);
+  --axo-color-material-dim-secondary: light-dark(#434c5e, #3b4252);
+  --axo-color-material-dialog: light-dark(rgba(236, 239, 244, 0.9), rgba(59, 66, 82, 0.95));
+  --axo-color-material-warning: light-dark(rgba(235, 203, 139, 0.24), rgba(235, 203, 139, 0.14));
+
+  /* Fills: nord3-tinted overlays on light, nord4-tinted on dark */
+  --axo-color-fill-primary: light-dark(rgba(46, 52, 64, 0.06), rgba(216, 222, 233, 0.08));
+  --axo-color-fill-primary-pressed: light-dark(rgba(46, 52, 64, 0.1), rgba(216, 222, 233, 0.12));
+  --axo-color-fill-secondary: light-dark(rgba(46, 52, 64, 0.16), rgba(216, 222, 233, 0.2));
+  --axo-color-fill-secondary-pressed: light-dark(rgba(46, 52, 64, 0.2), rgba(216, 222, 233, 0.24));
+  --axo-color-fill-tertiary: light-dark(rgba(46, 52, 64, 0.24), rgba(216, 222, 233, 0.28));
+  --axo-color-fill-tertiary-pressed: light-dark(rgba(46, 52, 64, 0.28), rgba(216, 222, 233, 0.32));
+  --axo-color-fill-control: light-dark(#d8dee9, rgba(216, 222, 233, 0.12));
+  --axo-color-fill-control-pressed: light-dark(rgba(76, 86, 106, 0.3), rgba(216, 222, 233, 0.16));
+  --axo-color-fill-inverted: light-dark(#434c5e, #d8dee9);
+  --axo-color-fill-inverted-pressed: light-dark(#4c566a, #e5e9f0);
+
+  /* On-message fills (hovers inside bubbles) */
+  --axo-color-fill-onmessage-incoming-primary: light-dark(rgba(76, 86, 106, 0.16), rgba(216, 222, 233, 0.16));
+  --axo-color-fill-onmessage-incoming-primary-pressed: light-dark(rgba(76, 86, 106, 0.2), rgba(216, 222, 233, 0.2));
+  --axo-color-fill-onmessage-incoming-secondary: light-dark(rgba(76, 86, 106, 0.12), rgba(216, 222, 233, 0.12));
+  --axo-color-fill-onmessage-incoming-secondary-pressed: light-dark(rgba(76, 86, 106, 0.16), rgba(216, 222, 233, 0.16));
+
+  /* Accent fills: Frost blues */
+  --axo-color-fill-accent: light-dark(#5e81ac, #5e81ac);
+  --axo-color-fill-accent-pressed: light-dark(#81a1c1, #81a1c1);
+  --axo-color-fill-accent-bright: light-dark(#88c0d0, #88c0d0);
+  --axo-color-fill-accent-bright-pressed: light-dark(#8fbcbb, #8fbcbb);
+  --axo-color-fill-accent-tint: light-dark(rgba(94, 129, 172, 0.1), rgba(136, 192, 208, 0.12));
+  --axo-color-fill-accent-tint-pressed: light-dark(rgba(94, 129, 172, 0.14), rgba(136, 192, 208, 0.16));
+
+  /* Borders */
+  --axo-color-border-primary: light-dark(rgba(46, 52, 64, 0.08), rgba(216, 222, 233, 0.06));
+  --axo-color-border-secondary: light-dark(rgba(46, 52, 64, 0.14), rgba(216, 222, 233, 0.12));
+  --axo-color-border-tertiary: light-dark(rgba(46, 52, 64, 0.28), rgba(216, 222, 233, 0.24));
+  --axo-color-border-selected: light-dark(#5e81ac, #88c0d0);
+  --axo-color-border-focused-outer: light-dark(#81a1c1, #81a1c1);
+
+  /* Legacy bridge tokens used by newer components to match old ones */
+  --axo-color-legacy-conversation-header-bg: light-dark(#e5e9f0, #2e3440);
+  --axo-color-legacy-signal-conversation-bg: light-dark(#eceff4, #3b4252);
+  --axo-color-legacy-official-chat-badge-bg: light-dark(rgba(94, 129, 172, 0.14), rgba(94, 129, 172, 0.4));
+  --axo-color-legacy-official-chat-badge-text: light-dark(#5e81ac, #88c0d0);
+  --axo-color-legacy-signal-chat-message-bg: light-dark(#5e81ac, #5e81ac);
+}
+
+/* ==========================================================================
+ * 1b. Dark-mode token overrides (Polar Night, literal values)
+ * ==========================================================================
+ * Signal's own tokens rely on light-dark() resolving per color-scheme; that
+ * resolution does not always re-evaluate when the theme changes dynamically.
+ * Signal scopes its theme via a `dark-theme` class on <body>, so pinning the
+ * dark Polar Night values to that class is deterministic.
+ */
+
+.dark-theme {
+  --axo-color-brand-primary: #81a1c1;
+
+  --axo-color-label-primary: rgba(236, 239, 244, 0.9);
+  --axo-color-label-secondary: rgba(236, 239, 244, 0.6);
+  --axo-color-label-placeholder: rgba(236, 239, 244, 0.35);
+  --axo-color-label-disabled: rgba(236, 239, 244, 0.25);
+
+  --axo-color-label-accent: #88c0d0;
+  --axo-color-label-accent-disabled: rgba(136, 192, 208, 0.3);
+  --axo-color-label-affirmative: #a3be8c;
+  --axo-color-label-affirmative-disabled: rgba(163, 190, 140, 0.3);
+  --axo-color-label-warning: #ebcb8b;
+  --axo-color-label-warning-disabled: rgba(235, 203, 139, 0.3);
+  --axo-color-label-safety: #d08770;
+  --axo-color-label-safety-disabled: rgba(208, 135, 112, 0.3);
+  --axo-color-label-destructive: #bf616a;
+  --axo-color-label-destructive-disabled: rgba(191, 97, 106, 0.3);
+
+  --axo-color-surface-primary: #2e3440;
+  --axo-color-surface-secondary: #3b4252;
+  --axo-color-surface-tertiary: #434c5e;
+  --axo-color-surface-quaternary: #4c566a;
+  --axo-color-surface-card: rgba(216, 222, 233, 0.08);
+  --axo-color-surface-message-incoming: #3b4252;
+  --axo-color-surface-message-outgoing: #5e81ac;
+
+  --axo-color-material-primary: rgba(46, 52, 64, 0.9);
+  --axo-color-material-secondary: rgba(59, 66, 82, 0.9);
+  --axo-color-material-tertiary: rgba(67, 76, 94, 0.9);
+  --axo-color-material-tertiary-pressed: rgba(76, 86, 106, 0.9);
+  --axo-color-material-quaternary: rgba(76, 86, 106, 0.9);
+  --axo-color-material-quaternary-pressed: rgba(216, 222, 233, 0.14);
+  --axo-color-material-dim-primary: #4c566a;
+  --axo-color-material-dim-secondary: #3b4252;
+  --axo-color-material-dialog: rgba(59, 66, 82, 0.95);
+  --axo-color-material-warning: rgba(235, 203, 139, 0.14);
+
+  --axo-color-fill-primary: rgba(216, 222, 233, 0.08);
+  --axo-color-fill-primary-pressed: rgba(216, 222, 233, 0.12);
+  --axo-color-fill-secondary: rgba(216, 222, 233, 0.2);
+  --axo-color-fill-secondary-pressed: rgba(216, 222, 233, 0.24);
+  --axo-color-fill-tertiary: rgba(216, 222, 233, 0.28);
+  --axo-color-fill-tertiary-pressed: rgba(216, 222, 233, 0.32);
+  --axo-color-fill-control: rgba(216, 222, 233, 0.12);
+  --axo-color-fill-control-pressed: rgba(216, 222, 233, 0.16);
+  --axo-color-fill-inverted: #d8dee9;
+  --axo-color-fill-inverted-pressed: #e5e9f0;
+
+  --axo-color-fill-onmessage-incoming-primary: rgba(216, 222, 233, 0.16);
+  --axo-color-fill-onmessage-incoming-primary-pressed: rgba(216, 222, 233, 0.2);
+  --axo-color-fill-onmessage-incoming-secondary: rgba(216, 222, 233, 0.12);
+  --axo-color-fill-onmessage-incoming-secondary-pressed: rgba(216, 222, 233, 0.16);
+
+  --axo-color-fill-accent: #5e81ac;
+  --axo-color-fill-accent-pressed: #81a1c1;
+  --axo-color-fill-accent-bright: #88c0d0;
+  --axo-color-fill-accent-bright-pressed: #8fbcbb;
+  --axo-color-fill-accent-tint: rgba(136, 192, 208, 0.12);
+  --axo-color-fill-accent-tint-pressed: rgba(136, 192, 208, 0.16);
+
+  --axo-color-border-primary: rgba(216, 222, 233, 0.06);
+  --axo-color-border-secondary: rgba(216, 222, 233, 0.12);
+  --axo-color-border-tertiary: rgba(216, 222, 233, 0.24);
+  --axo-color-border-selected: #88c0d0;
+  --axo-color-border-focused-outer: #81a1c1;
+
+  --axo-color-legacy-conversation-header-bg: #2e3440;
+  --axo-color-legacy-signal-conversation-bg: #3b4252;
+  --axo-color-legacy-official-chat-badge-bg: rgba(94, 129, 172, 0.4);
+  --axo-color-legacy-official-chat-badge-text: #88c0d0;
+  --axo-color-legacy-signal-chat-message-bg: #5e81ac;
+}
+
+/* ==========================================================================
+ * 2. Legacy component overrides (Polar Night)
+ * Applies to components still styled from SCSS color literals.
+ * ========================================================================== */
+
+.dark-theme {
+  background-color: #2e3440;
+  color: #eceff4;
+}
+
+/* Left icon rail and conversation sidebar (token-driven in recent versions;
+ * kept as fallback for older ones) */
+.dark-theme .NavTabs,
+.dark-theme .NavSidebar {
+  background-color: #3b4252 !important;
+}
+
+.dark-theme .NavTabs__ItemButton:hover {
+  background-color: rgba(216, 222, 233, 0.12) !important;
+}
+
+.dark-theme .NavTabs__Item[aria-selected='true'] > span > .NavTabs__ItemButton {
+  background-color: rgba(216, 222, 233, 0.16) !important;
+}
+
+.dark-theme .module-conversation-list__item--contact-or-conversation:hover,
+.dark-theme .module-conversation-list__item--contact-or-conversation:focus,
+.dark-theme .module-conversation-list__item--contact-or-conversation--is-selected,
+.dark-theme .module-conversation-list__item--archive-button:hover,
+.dark-theme .module-conversation-list__item--archive-button:focus,
+.dark-theme .module-left-pane__archive-helper-text {
+  background-color: #434c5e !important;
+}
+
+/* Conversation area */
+.dark-theme .Inbox__no-conversation-open,
+.dark-theme .module-timeline,
+.dark-theme .module-ConversationHeader,
+.dark-theme .CompositionArea,
+.dark-theme .ConversationPanel,
+.dark-theme .ConversationPanel__header {
+  background-color: #2e3440 !important;
+}
+
+.dark-theme .module-ConversationHeader__button:hover,
+.dark-theme .module-ConversationHeader__button:focus {
+  background-color: #3b4252 !important;
+}
+
+/* Incoming bubbles (token-driven in recent versions; fallback for older) */
+.dark-theme .module-message__container--incoming {
+  background-color: #3b4252 !important;
+}
+
+/* Reply quotes */
+.dark-theme .module-quote--incoming > .module-quote__primary,
+.dark-theme .module-quote--incoming > .module-quote__icon-container {
+  background-color: #434c5e !important;
+  border: 0 !important;
+}
+
+/* Composition input */
+.dark-theme .module-composition-input__input {
+  background-color: #3b4252 !important;
+}
+
+/* Floating "today" header, scroll-down button, mini player, toasts */
+.dark-theme .TimelineDateHeader--floating,
+.dark-theme .TimelineFloatingHeader__spinner-container,
+.dark-theme .ScrollDownButton,
+.dark-theme .Toast,
+.dark-theme .MiniPlayer,
+.dark-theme .module-Button--system-message {
+  background-color: #434c5e !important;
+}
+
+/* Context menus */
+.dark-theme .react-contextmenu,
+.dark-theme .ContextMenu__popper--single-item,
+.dark-theme .module-Modal {
+  background-color: #3b4252 !important;
+}
+
+.dark-theme .react-contextmenu-item--selected {
+  background-color: #4c566a !important;
+}
+
+/* Buttons */
+.dark-theme .module-Button {
+  background-color: #434c5e !important;
+}
+
+.dark-theme .module-Button:hover {
+  background-color: #4c566a !important;
+}
+
+.dark-theme .module-Button--secondary--destructive {
+  color: #bf616a !important;
+}
+
+/* Conversation details panel, inputs */
+.dark-theme .ConversationDetails-panel-row__root--button:hover {
+  background-color: #434c5e !important;
+}
+
+.dark-theme .Input__container {
+  background-color: #3b4252 !important;
+  border-color: #4c566a !important;
+}
+
+.dark-theme .module-select > select {
+  background-color: #3b4252 !important;
+}
+
+/* Settings */
+.dark-theme .Preferences__page-selector {
+  background-color: #2e3440 !important;
+}
+
+.dark-theme .Preferences__settings-pane {
+  background-color: #2e3440 !important;
+}
+
+.dark-theme .Preferences__button--selected,
+.dark-theme .Preferences__button:focus {
+  background-color: #434c5e !important;
+}
+
+.dark-theme .Preferences__control--clickable:hover {
+  background-color: #434c5e !important;
+}
+
+/* Calls */
+.dark-theme .CallsTab__EmptyState,
+.dark-theme .CallsTab__ConversationCallDetails,
+.dark-theme .module-calling__container {
+  background-color: #2e3440 !important;
+}
+
+.dark-theme .CallsList__ItemTile:hover {
+  background-color: #434c5e !important;
+}
+
+.dark-theme .CallsList__ItemTile[aria-selected='true'] {
+  background-color: #3b4252 !important;
+}
+
+.dark-theme .CallsNewCall_ItemActionButton,
+.dark-theme .CallingButton__icon,
+.dark-theme .module-calling__background {
+  background-color: #5e81ac !important;
+}
+
+.dark-theme .CallSettingsButton__Button,
+.dark-theme .CallControls {
+  background-color: #3b4252 !important;
+}
+
+/* Stories */
+.dark-theme .Stories__placeholder {
+  background-color: #3b4252 !important;
+}
+
+/* Lightbox (image viewer) */
+.dark-theme .Lightbox__animated {
+  background-color: rgba(46, 52, 64, 0.9) !important;
+}
+
+/* Safety number modal buttons */
+.dark-theme .module-SafetyNumberViewer__button > button {
+  background-color: #434c5e !important;
+}
+
+/* ==========================================================================
+ * 3. Opt-in: flat Nord outgoing bubbles
+ * ==========================================================================
+ * Outgoing bubbles use per-conversation chat colors by default. Uncomment
+ * to render them all in nord10 (Frost) instead. Incoming bubbles stay nord1.
+ *
+ * .module-message__container--outgoing {
+ *   background: #5e81ac !important;
+ *   color: #eceff4 !important;
+ * }
+ */

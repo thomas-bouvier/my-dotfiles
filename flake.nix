@@ -116,6 +116,7 @@
         nur.overlays.default
         nix-vscode-extensions.overlays.default
         (import ./overlays/coi.nix)
+        (import ./overlays/signal-nord)
       ];
 
       mkUnstableOverlay = final: prev: {
