@@ -174,7 +174,6 @@ in
         # Audio
         kdePackages.elisa
         yt-dlp
-        audacity
         ffmpeg
 
         # Theme

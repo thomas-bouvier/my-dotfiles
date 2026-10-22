@@ -140,12 +140,17 @@
   };
 
   nixpkgs.config = {
+    permittedInsecurePackages = [
+      "firefox-esr-140-bin-unwrapped-140.17.0esr"
+    ];
+
     # Combined predicate: keep the legacy name whitelist, and also accept
     # packages whose licenses are CUDA-related EULAs.
     allowUnfreePredicate =
       let
         ensureList = x: if builtins.isList x then x else [ x ];
         legacyNames = [
+          "firefox-esr-140-bin-unwrapped"
           "cnijfilter2"
           "unrar"
           # Nvidia
