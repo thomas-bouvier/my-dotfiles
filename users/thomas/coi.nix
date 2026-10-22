@@ -29,6 +29,14 @@
     # Wayland clipboard). Without this, <leader>y (messages_copy) reports
     # success but the desktop clipboard never changes.
     set -g set-clipboard on
+    # opencode v2's clipboard write wraps OSC 52 in a tmux DCS passthrough
+    # (ESC P "tmux;" + ESC-doubled payload + ESC \) whenever it detects $TMUX,
+    # and tmux silently drops passthrough unless allowed — v2's copy then
+    # reports success while the desktop clipboard never changes (v1 emitted
+    # raw OSC 52, which set-clipboard on alone forwarded). NOTE:
+    # allow-passthrough is a WINDOW-scoped option (pane lookups resolve
+    # window → global, never server), hence set -g — `set -s` is a no-op here.
+    set -g allow-passthrough on
   '';
 
   # Tool selection is config-only in coi (there is no --tool flag). coi seeds

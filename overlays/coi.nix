@@ -8,7 +8,7 @@
 # the Nix store / the cap wrapper).
 final: prev:
 let
-  version = "0.13.0";
+  version = "0.15.0";
 in
 {
   coi = final.buildGoModule {
@@ -19,7 +19,7 @@ in
       owner = "coipond";
       repo = "coi";
       rev = "v${version}";
-      hash = "sha256-hqzHu9oPk4uE0duISS5KeOIBc6SlJaBkbCSLiu2GHC0=";
+      hash = "sha256-ky+c1qPBqpU4QfenbXOcthcG5yGVLnfRvolDJMR6q1E=";
     };
 
     vendorHash = "sha256-XSTbxBrLzHBNLhzCz7aDqZ5ioaQlZgIWexjtpbX9xk0=";
@@ -31,6 +31,18 @@ in
     postPatch = ''
       mkdir -p internal/image/embedded
       cp testdata/dummy/dummy internal/image/embedded/dummy
+
+      # build.sh installs opencode from GitHub's releases/latest channel —
+      # since v2 that channel only serves the v1 line (v2 ships as git tags,
+      # distributed via opencode.ai), so every freshly created coi container
+      # would boot opencode v1. Point the image's install at the official v2
+      # CLI tarball instead (same archive layout: one `opencode` binary at
+      # the archive root, same opencode-linux-<arch> asset naming). The
+      # grep guard makes a future upstream URL change fail the build loudly
+      # instead of silently shipping v1 images again.
+      grep -q 'https://github.com/anomalyco/opencode/releases/latest/download/opencode-linux-' internal/image/build.sh \
+        || { echo "ERROR: opencode download URL not found in build.sh — upstream changed it, update the sed below" >&2; exit 1; }
+      sed -i 's|https://github.com/anomalyco/opencode/releases/latest/download/opencode-linux-|https://opencode.ai/update/api/latest/cli/opencode/opencode-linux-|' internal/image/build.sh
     '';
 
     # coi reads the systemd journal via cgo (internal/nftmonitor/journalctl.go)
@@ -38,7 +50,7 @@ in
     buildInputs = [ final.systemdMinimal ];
 
     ldflags = [
-      "-X github.com/mensfeld/code-on-incus/internal/cli.Version=${version}"
+      "-X github.com/coipond/coi/internal/cli.Version=${version}"
     ];
 
     doCheck = false; # tests require a running Incus
@@ -53,7 +65,7 @@ in
 
     meta = {
       description = "Give each AI agent its own isolated machine with root, Docker, and systemd";
-      homepage = "https://github.com/mensfeld/code-on-incus";
+      homepage = "https://github.com/coipond/coi";
       license = final.lib.licenses.mit;
       mainProgram = "coi";
     };
