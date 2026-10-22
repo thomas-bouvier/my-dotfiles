@@ -8,15 +8,13 @@ Download the [minimal ISO NixOS image](https://nixos.org/download/), and create 
 > If installing for an Apple Silicon machine, you should download an ISO from [here](https://github.com/nix-community/nixos-apple-silicon/releases) instead.
 
 > [!NOTE]
-> **Raspberry Pi 4 (`morille`)**: the Pi cannot boot the minimal ISO. Instead, build the pre-installed SD card image from an `aarch64` machine (e.g. `amanite`), then flash it to the SD card (**this erases the card**). No installer, no partitioning: the image boots directly into the system and grows the root partition on first boot.
->
-> The build snapshots the **git tree**: new files must be tracked (`git add`) before building, or they are invisible to it. Don't keep build inputs as untracked or restrictive-permission files in the repo.
+> **Raspberry Pi**: the Pi cannot boot the minimal ISO. Instead, build the pre-installed SD card image from an `aarch64` machine (e.g. `amanite`), then flash it to the SD card (**this erases the card**). No installer, no partitioning: the image boots directly into the system and grows the root partition on first boot.
 >
 > ```console
 > nix build .#nixosConfigurations.morille.config.system.build.sdImage
 > ```
 >
-> Identify your SD card with `lsblk` (it should be a `disk`, not a `part`), then flash it — **beware: `of=` must be the full block device path under `/dev/`; without the `/dev/` prefix, `dd` silently writes a regular file into the current directory instead**:
+> Identify your SD card with `lsblk`, then flash it:
 >
 > ```console
 > zstd -d result/sd-image/*.img.zst --stdout | sudo dd of=/dev/<DISK> bs=4M status=progress conv=fsync
