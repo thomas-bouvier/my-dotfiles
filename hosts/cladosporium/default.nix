@@ -52,7 +52,6 @@
 
     initrd.luks.devices."dm-lvm" = {
       device = "/dev/disk/by-uuid/c39eb9dc-607a-4579-9d37-dc8381903e8c";
-      preLVM = true;
     };
 
     initrd.availableKernelModules = [
