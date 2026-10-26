@@ -6,7 +6,31 @@
   ...
 }:
 
+let
+  # Let's Encrypt publishes every issued hostname in the public
+  # Certificate Transparency logs anyway, so the domain is not treated
+  # as a secret here.
+  domain = "reunion.servebeer.com";
+in
 {
+  # Let's Encrypt certificate, renewed automatically by the NixOS ACME
+  # module (lego). No-IP hosts cannot use the DNS-01 challenge (no TXT
+  # record API), so the HTTP-01 challenge is served by lego itself:
+  # port 80 must be forwarded to this machine, and only needs to answer
+  # during issuance and renewal. Home Assistant itself is reachable on
+  # the router's port mapping 8312 (external) -> 8123 (internal).
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "contact@thomas-bouvier.io";
+
+    certs."${domain}" = {
+      listenHTTP = ":80";
+      # Restart Home Assistant when the certificate renews so it picks
+      # up the new files.
+      reloadServices = [ "podman-home-assistant" ];
+    };
+  };
+
   virtualisation.oci-containers.containers.home-assistant = {
     image = "ghcr.io/home-assistant/home-assistant:stable";
 
@@ -30,6 +54,7 @@
     volumes = [
       "/var/lib/home-assistant:/config"
       "/run/dbus:/run/dbus:ro"
+      "/var/lib/acme/${domain}:/certificates:ro"
     ];
 
     environment = {
@@ -48,5 +73,9 @@
     wants = [ "time-sync.target" ];
   };
 
-  networking.firewall.allowedTCPPorts = [ 8123 ];
+  # The ACME challenge (HTTP-01), served on port 80 by lego.
+  networking.firewall.allowedTCPPorts = [
+    80
+    8123
+  ];
 }
