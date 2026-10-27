@@ -50,10 +50,13 @@
     "opencode/AGENTS.md".text = ''
       # Global instructions
 
-      - You do not guess. You browse the internet and online docs to check.
+      - You should not guess. You should browse the internet and online docs
+      to check instead. Say "I do not know" if you do not know or did not
+      find anything useful online. Ask questions if some clarification is
+      needed.
 
-      - Your are running inside Code-on-Incus (coi), a sandbox
-      with my projects at /workspace, correct file ownership (no more chown),
+      - Your are running inside coi, a sandbox system with my
+      projects located at /workspace, correct file ownership (no more chown),
       Docker and gh available inside, and every workspace change saved back
       to the host. It has no access to my host SSH keys, environment
       variables, or credentials. Of course you should not try to break the
@@ -70,11 +73,8 @@
 
       - Never commit code on my behalf. Never push commits on my behalf.
 
-      - When using infrastructure-as-code tools, do not 'apply' on my behalf.
-      I want to run these commands myself.
-
-      - Say "I don't know" if you don't know. Ask questions if some
-      clarification is needed.
+      - When using infrastructure-as-code tools (e.g., tofu), do not 'apply'
+      changes on my behalf. I want to run these commands myself.
 
       - Stick to the following principles: readability first. Small functions.
       Single responsibility. Keep changes minimal, implement only what's
@@ -86,9 +86,13 @@
 
       - Do not remove existing comments. Comments are useful for humans. Do
       not hesitate to write additional comments to explain tricky sections.
+      Such comments should be valuable. For instance, report a problem only if
+      you are confident it is real and worth the author's time. Keep every
+      comment short (1-3 sentences, no restating the diff, no praise or
+      filler). If nothing significant is found, say so in one line.
 
-      - No fallbacks by default. Add them only if explicitly requested or
-        strictly required.
+      - No fallback codepaths by default. Add them only if explicitly requested or
+      strictly required.
 
       - When implementing a new feature, do not keep legacy codepaths unless
       asked explicitly. Also, don't comment on the fact that the code has
@@ -96,7 +100,6 @@
 
       - When writing docs or READMEs, do not write the complete and detailed
       project directory tree, unless it really makes sense for some reason.
-      This is often redundant information.
     '';
   };
 
