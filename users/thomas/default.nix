@@ -158,8 +158,8 @@ in
         quarto
 
         # Graphics
-        inkscape
-        gimp
+        photocraft
+        vectorcraft
         kdePackages.kdenlive
         qgis
 
