@@ -58,16 +58,13 @@
   # The kernel and the initrd live on the FAT partition: give it room.
   sdImage.firmwareSize = 512;
 
-  # Classic (busybox) initrd: the proven boot path on this board.
-  #
-  # `sd-image-aarch64` is installer-oriented: it force-enables
-  # `hardware.enableAllHardware`, whose generic aarch64 module list
-  # includes Rockchip's `dw-hdmi` — a module the RPi kernel doesn't
-  # provide and which breaks the initrd module closure build. Keep only
-  # what a headless Raspberry Pi 4 needs — in particular `mmc_block`
-  # (without it, stage 1 cannot see the SD card's root partition) and
-  # `genet` (the Pi 4 ethernet driver).
-  boot.initrd.systemd.enable = false;
+  # Scripted initrd was removed from nixpkgs: stage 1 is systemd-only.
+  # Keep the module list minimal — `sd-image-aarch64` force-enables
+  # `hardware.enableAllHardware`, whose generic aarch64 list includes
+  # Rockchip's `dw-hdmi`, a module the RPi kernel does not provide and
+  # which breaks the initrd module closure. In particular `mmc_block`
+  # (stage 1 must see the SD card's root partition) and `genet` (Pi 4
+  # ethernet) are required.
   boot.initrd.availableKernelModules = lib.mkForce [
     "pcie-brcmstb" # required for the pcie bus to work
     "reset-raspberrypi" # required for vl805 firmware to load
@@ -90,6 +87,46 @@
 
   # On boot failure, drop to a shell instead of hanging silently.
   boot.kernelParams = [ "boot.shell_on_fail" ];
+
+  # The boot chain above never consults the system profile: the
+  # firmware loads a fixed kernel and a fixed `init=` path. Rebuilds
+  # must rewrite those files, or every reboot reverts to the
+  # generation the SD image was built from. NixOS calls this installer
+  # on every `nixos-rebuild switch`/`boot` with the new system path as
+  # argument; it replaces the extlinux installer from
+  # `sd-image-aarch64`, which wrote an unused menu to /boot.
+  system.build.installBootLoader = lib.mkForce (
+    pkgs.writeShellScript "update-pi-firmware" ''
+      set -eu
+      # Mount the firmware partition: the fstab entry exists on every
+      # generation, but an older one may still carry `noauto` and an
+      # unstarted mount unit, so neither the mount point nor the mount
+      # may exist yet.
+      mkdir -p /boot/firmware
+      mountpoint -q /boot/firmware || mount /boot/firmware
+      firmware=/boot/firmware
+      system="$1"
+      # Copy to a temporary name first: a power cut mid-switch must not
+      # leave a truncated kernel on the boot partition.
+      cp "$system/kernel" "$firmware/Image.tmp"
+      sync
+      mv -f "$firmware/Image.tmp" "$firmware/Image"
+      cp "$system/initrd" "$firmware/initrd.tmp"
+      sync
+      mv -f "$firmware/initrd.tmp" "$firmware/initrd"
+      printf 'init=%s/init %s\n' "$system" "$(cat "$system/kernel-params")" \
+        > "$firmware/cmdline.txt.tmp"
+      sync
+      mv -f "$firmware/cmdline.txt.tmp" "$firmware/cmdline.txt"
+      sync
+    ''
+  );
+
+  # The installer above writes to the firmware partition, so mount it
+  # at runtime instead of `sd-image.nix`'s `noauto` default. Device
+  # trees, overlays and GPU boot code are only refreshed by a new SD
+  # image — fine while the kernel generation does not change.
+  fileSystems."/boot/firmware".options = lib.mkForce [ "nofail" ];
 
   # ---------------------------------------------------------------------------
 
