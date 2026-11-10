@@ -78,4 +78,10 @@ in
     80
     8123
   ];
+
+  # Sonos speakers connect back to Home Assistant on TCP 1400 to push
+  # change events (up to 1500 if 1400 is busy). Blocked, the integration
+  # falls back to slow polling and the speaker flaps to unavailable.
+  # https://www.home-assistant.io/integrations/sonos/#network-requirements
+  networking.firewall.allowedTCPPortRanges = [ { from = 1400; to = 1500; } ];
 }
