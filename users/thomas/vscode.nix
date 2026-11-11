@@ -13,6 +13,9 @@
       enableExtensionUpdateCheck = false;
 
       extensions = with pkgs.nix-vscode-extensions.open-vsx-release; [
+        # Devcontainers
+        s-h-a-d-o-w.dev-containers-oss
+
         # IDE
         vscodevim.vim
         marlosirapuan.nord-deep
@@ -46,6 +49,7 @@
         "files.insertFinalNewline" = true;
         "files.trimFinalNewlines" = true;
         "chat.disableAIFeatures" = true;
+        "dev.containers.dockerPath" = "podman";
 
         # marimo: the bundled WASM language server is spawned via
         # ELECTRON_RUN_AS_NODE on the VSCodium binary, but our VSCodium
