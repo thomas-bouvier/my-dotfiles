@@ -168,7 +168,6 @@ in
         ryubing
         luanti
         nicotine-plus
-        gpodder
         mixxx
 
         # Audio
