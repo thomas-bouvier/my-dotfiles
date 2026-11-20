@@ -33,15 +33,18 @@
 
   services.resolved = {
     enable = true;
-
     settings.Resolve = {
-      DNSOverTLS = false;
-      DNSSEC = false;
+      DNSOverTLS = true; # strict DoT, no plaintext fallback
+      DNSSEC = true; # DNS4EU serves DNSSEC-validated answers
+
+      # The `#name` suffix tells resolved the SNI and certificate name to
+      # validate against: DNS4EU's certs carry no IP SANs, so bare IPs
+      # would fail validation in strict mode and break all DNS.
       DNS = [
-        "86.54.11.13"
-        "86.54.11.213"
-        "2a13:1001::86.54.11.13"
-        "2a13:1001::86.54.11.213"
+        "86.54.11.13#noads.joindns4.eu"
+        "86.54.11.213#noads.joindns4.eu"
+        "2a13:1001::86:54:11:13#noads.joindns4.eu"
+        "2a13:1001::86:54:11:213#noads.joindns4.eu"
       ];
     };
   };
