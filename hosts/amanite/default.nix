@@ -27,6 +27,9 @@
   boot = {
     # Use the systemd-boot EFI boot loader.
     loader.systemd-boot.enable = true;
+    # Keep only the 3 newest generations on the ESP (~95 MiB each on asahi,
+    # and the ESP is only 476 MiB) so it does not fill up.
+    loader.systemd-boot.configurationLimit = 3;
     loader.efi.canTouchEfiVariables = false;
 
     initrd.availableKernelModules = [
