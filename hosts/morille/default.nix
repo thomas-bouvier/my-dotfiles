@@ -25,6 +25,9 @@
 
     # Home Assistant container
     ./home-assistant.nix
+
+    # Music Assistant container
+    ./music-assistant.nix
   ];
 
   # --- Boot -----------------------------------------------------------------
@@ -98,6 +101,13 @@
   system.build.installBootLoader = lib.mkForce (
     pkgs.writeShellScript "update-pi-firmware" ''
       set -eu
+      # switch-to-configuration may run in a clean environment without
+      # an inherited PATH (e.g. in the transient systemd unit `nh`
+      # activates through): resolve every tool from the store.
+      export PATH=${lib.makeBinPath [
+        pkgs.coreutils # mkdir, cp, mv, sync, cat
+        pkgs.util-linux # mount, mountpoint
+      ]}
       # Mount the firmware partition: the fstab entry exists on every
       # generation, but an older one may still carry `noauto` and an
       # unstarted mount unit, so neither the mount point nor the mount
