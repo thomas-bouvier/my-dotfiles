@@ -136,12 +136,14 @@
       "dom.security.https_only_mode" = true;
       "dom.security.https_only_mode_ever_enabled" = true;
 
-      # DNS over HTTPS (DoH) with NextDNS
+      # DNS over HTTPS (DoH) with DNS4EU
       # Mode 3 = DoH only, no fallback to traditional DNS
       "network.trr.mode" = 3;
       "network.trr.custom_uri" = "https://noads.joindns4.eu/dns-query";
       "network.trr.uri" = "https://noads.joindns4.eu/dns-query";
       "network.trr.confirmationNS" = "skip";
+      # Tailnet names (MagicDNS) are only resolvable via the OS resolver
+      "network.trr.excluded-domains" = "ts.net";
       "network.dns.skipTRR-when-parental-control-enabled" = false;
 
       # Enable HTTP/3 (QUIC) for better performance and security
