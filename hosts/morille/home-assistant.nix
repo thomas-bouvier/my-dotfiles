@@ -6,31 +6,10 @@
   ...
 }:
 
-let
-  # Let's Encrypt publishes every issued hostname in the public
-  # Certificate Transparency logs anyway, so the domain is not treated
-  # as a secret here.
-  domain = "reunion.servebeer.com";
-in
 {
-  # Let's Encrypt certificate, renewed automatically by the NixOS ACME
-  # module (lego). No-IP hosts cannot use the DNS-01 challenge (no TXT
-  # record API), so the HTTP-01 challenge is served by lego itself:
-  # port 80 must be forwarded to this machine, and only needs to answer
-  # during issuance and renewal. Home Assistant itself is reachable on
-  # the router's port mapping 8312 (external) -> 8123 (internal).
-  security.acme = {
-    acceptTerms = true;
-    defaults.email = "contact@thomas-bouvier.io";
-
-    certs."${domain}" = {
-      listenHTTP = ":80";
-      # Restart Home Assistant when the certificate renews so it picks
-      # up the new files.
-      reloadServices = [ "podman-home-assistant" ];
-    };
-  };
-
+  # Tailnet-only access: `tailscale serve --bg 8123` (run once, it
+  # persists in tailscaled state) proxies https://morille.tail52e42b.ts.net
+  # to http://127.0.0.1:8123, certificate included.
   virtualisation.oci-containers.containers.home-assistant = {
     image = "ghcr.io/home-assistant/home-assistant:stable";
 
@@ -54,7 +33,6 @@ in
     volumes = [
       "/var/lib/home-assistant:/config"
       "/run/dbus:/run/dbus:ro"
-      "/var/lib/acme/${domain}:/certificates:ro"
     ];
 
     environment = {
@@ -73,11 +51,10 @@ in
     wants = [ "time-sync.target" ];
   };
 
-  # The ACME challenge (HTTP-01), served on port 80 by lego.
-  networking.firewall.allowedTCPPorts = [
-    80
-    8123
-  ];
+  # Port 8123 opens access from the local network only. Tailnet traffic
+  # reaches Home Assistant on 443 through Tailscale's own firewall
+  # chains, no matter what is allowed here.
+  networking.firewall.allowedTCPPorts = [ 8123 ];
 
   # Sonos speakers connect back to Home Assistant on TCP 1400 to push
   # change events (up to 1500 if 1400 is busy). Blocked, the integration
