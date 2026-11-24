@@ -24,11 +24,6 @@
         5353
       ];
     };
-
-    extraHosts = "
-      144.76.43.250 lix.systems
-      144.76.43.250 git.lix.systems
-    ";
   };
 
   services.resolved = {
