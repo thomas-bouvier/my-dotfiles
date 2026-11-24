@@ -72,6 +72,11 @@
     libinput.enable = true;
   };
 
+  # Disable the KDE PIM stack: the Plasma 6 module enables akonadi and
+  # kdepim-runtime by default and, since nixpkgs 2026-10, KMail/Kontact/Merkuro
+  # as well. We use Thunderbird.
+  programs.kde-pim.enable = false;
+
   # Kwallet
   security.pam.services.sddm.enableKwallet = true;
   security.pam.services.kdewallet.enableKwallet = true;
