@@ -7,11 +7,11 @@ My declarative, reproducible [NixOS](https://nixos.org/) system built using [Lix
 - Variants of users ;
 - A beautiful KDE Plasma desktop with [theme Nord](https://www.nordtheme.com/) applied everywhere ;
 - LibreWolf which I spent some time hardening ;
-- My Emacs config including OpenCode.el ;
+- My Emacs config ;
 - Shell synchronisation via `atuin` ;
 - LUKS encryption via `disko` ;
 - Secrets management with `sops` ;
-- YubiKey support.
+- YubiKey and Tailscale support.
 
 I've aimed for a balance between readability and completeness.
 
